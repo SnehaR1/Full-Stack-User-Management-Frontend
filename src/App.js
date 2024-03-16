@@ -1,24 +1,29 @@
-import logo from './logo.svg';
 import './App.css';
-
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Register from './Components/Register';
+import Home from './Components/Home';
+import Login from './Components/Login';
+import { useSelector, useDispatch } from 'react-redux'; // Import useDispatch
+import { login } from './auth/authSlice';
+import { useEffect } from 'react';
+import AdminLogin from './Components/AdminLogin';
+import AdminDashboard from './Components/AdminDashboard';
+import AddUser from './Components/AddUser';
 function App() {
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  const token = useSelector(state => state.auth.token);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />} />
+        <Route path="/admin_login" element={<AdminLogin />} />
+        <Route path="/adduser" element={<AddUser />} />
+        <Route path="/dashboard" element={isAuthenticated ? <AdminDashboard /> : <Navigate to="/admin_login" replace />} />
+      </Routes>
+    </Router>
   );
 }
 
