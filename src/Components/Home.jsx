@@ -19,6 +19,8 @@ function Home() {
     const [submit, setSubmit] = useState(false)
     const dispatch = useDispatch();
     const refreshToken = useSelector(state => state.auth.refreshToken);
+    const [imagePreview, setImagePreview] = useState(null);
+
     const refreshTokenFunction = async () => {
         try {
 
@@ -93,6 +95,18 @@ function Home() {
         const file = e.target.files[0];
         setImgfile(file)
         setSubmit(true)
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+                console.log(imagePreview)
+            };
+            reader.readAsDataURL(file);
+        } else {
+
+            setImagePreview(null);
+        }
+
 
     }
 
@@ -121,29 +135,31 @@ function Home() {
 
     return (
         <div>
-            <NavBar />
+            <NavBar admin={userInfo.is_staff} />
 
             {userInfo && (
-                <div className="flex flex-col  items-center h-screen w-full justify-center">
-                    <h1 className=' text-purple-950 text-4xl font-bold mt-64'>User Profile</h1>
-                    <div className="flex flex-col justify-center items-center max-w-md mt-4 ">
-                        <div className="bg-white shadow-xl rounded-lg py-12 mb-56 mt-8 w-full h-full px-24 ">
+                <div className="flex flex-col  items-center h-screen w-full justify-center mt-24">
+                    <h1 className=' text-purple-950 text-4xl font-bold '>User Profile</h1>
+                    <div className="flex flex-col justify-center items-center max-w-md mt-2 ">
+                        <div className="bg-white shadow-xl rounded-lg py-8 mb-64 mt-8 w-full h-full px-24 ">
                             <div className="photo-wrapper p-2 ">
-                                {image !== null ? <img className='rounded-full w-56 h-56 mb-12' key={image} src={`http://127.0.0.1:8000${image}?${Date.now()}`} alt="profile picture" /> : <img src={Unknown} alt="profile picture" />}
+                                {imagePreview ? <img className='rounded-full w-56 h-56 mb-12' key={imagePreview} src={imagePreview} alt="profile picture" /> : image !== null ? <img className='rounded-full w-56 h-56 mb-12' key={image} src={`http://127.0.0.1:8000${image}?${Date.now()}`} alt="profile picture" /> : <img src={Unknown} alt="profile picture" />}
                                 <div className='flex flex-col'>
-                                    <label className=" flex justify-center relative cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md shadow-sm">
-                                        Upload Image
-                                        <input
-                                            type="file"
-                                            onChange={handleImage}
-                                            accept="image/*"
-                                            className="hidden"
-                                        />
-                                    </label>
+
                                     {submit ?
-                                        <button onClick={handleImageUpload} className="mt-2  bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md shadow-sm">
+                                        <><button onClick={handleImageUpload} className="mt-2  bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md shadow-sm">
                                             Submit
-                                        </button> : <></>
+                                        </button><button onClick={() => { setImagePreview(null); setSubmit(false) }} className="mt-2  bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md shadow-sm">
+                                                Cancel
+                                            </button> </> : <label className=" flex justify-center relative cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md shadow-sm">
+                                            Upload Image
+                                            <input
+                                                type="file"
+                                                onChange={handleImage}
+                                                accept="image/*"
+                                                className="hidden"
+                                            />
+                                        </label>
                                     }
                                 </div>
                             </div>

@@ -3,7 +3,7 @@ import { api } from '../api/api'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../auth/authSlice'
-function NavBar() {
+function NavBar({ admin }) {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -38,6 +38,7 @@ function NavBar() {
         <div>
             <nav className='bg-purple-950 w-full text-white flex flex-row justify-between p-3'>
                 <p className='text-white font-bold text-3xl'>Home</p>
+
                 <button onClick={handleClick} className='text-white border border-white p-2 rounded-sm'>Logout</button>
             </nav>
         </div>
